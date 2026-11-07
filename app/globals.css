@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #0f1a12;
+  --color-ink-soft: #1c2b20;
+  --color-canvas: #fafaf7;
+  --color-tint: #f1f6ee;
+  --color-muted: #5b6660;
+  --color-line: #e4e9e1;
+  --color-brand: #22c55e;
+  --color-brand-deep: #16a34a;
+  --color-brand-ink: #15803d;
+  --color-night: #0a0a0f;
+  --color-whatsapp: #25d366;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Keep anchored sections clear of the sticky navbar. */
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-deep);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+}
