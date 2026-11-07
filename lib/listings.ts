@@ -24,6 +24,9 @@ export type Listing = {
   time: string;
   venue: string;
   city: string;
+  /** Venue position for the map. Right-click a place in Google Maps to copy these. */
+  lat?: number;
+  lng?: number;
   description: string;
   highlights: string[];
   tiers: Tier[];
@@ -43,6 +46,8 @@ export const listings: Listing[] = [
     time: "8:00 PM",
     venue: "Dataran Merdeka",
     city: "Kuala Lumpur",
+    lat: 3.1478,
+    lng: 101.6937,
     description:
       "Run the city after dark on a closed-road route through the heart of KL. Glow sticks at every kilometre, a DJ at the finish line and a medal that lights up.",
     highlights: [
@@ -81,6 +86,8 @@ export const listings: Listing[] = [
     time: "6:00 PM",
     venue: "Festival Grounds",
     city: "Sepang, Selangor",
+    lat: 2.7608, // approximate: Sepang circuit area
+    lng: 101.7381,
     description:
       "Two stages, eight acts and one very long night. The year's biggest outdoor music festival returns with a bigger main stage and a new late-night arena.",
     highlights: [
@@ -125,6 +132,8 @@ export const listings: Listing[] = [
     time: "6:30 PM daily",
     venue: "Dataran Glow",
     city: "Petaling Jaya",
+    lat: 3.1073, // approximate: central PJ
+    lng: 101.6067,
     description:
       "A buka puasa buffet with over 150 dishes, right beside a 120-stall Ramadan bazaar. Pick your date at the door, the pass is valid any evening of the month.",
     highlights: [
@@ -152,6 +161,8 @@ export const listings: Listing[] = [
     time: "7:30 PM",
     venue: "Grand Ballroom, [Hotel Name]",
     city: "Kuala Lumpur",
+    lat: 3.1579, // approximate: KLCC, update when the hotel is confirmed
+    lng: 101.7116,
     description:
       "A black-tie evening raising funds for children's education. Every seat funds a year of school supplies for one child. Dinner, live auction and performances.",
     highlights: [
@@ -195,6 +206,8 @@ export const listings: Listing[] = [
     time: "4:00 PM – 12:00 AM",
     venue: "Waterfront Park",
     city: "Johor Bahru",
+    lat: 1.4594, // approximate: JB city waterfront
+    lng: 103.7634,
     description:
       "Three nights of street food from across Malaysia and the region, with live bands and a night market. Entry is free, food passes save you money and queue time.",
     highlights: [
@@ -224,6 +237,8 @@ export const listings: Listing[] = [
     time: "5:00 AM",
     venue: "Presint 2",
     city: "Putrajaya",
+    lat: 2.934, // approximate: central Putrajaya
+    lng: 101.693,
     description:
       "A flat, fast course around the lake, timed so you cross the bridges at sunrise. A good one for chasing a personal best.",
     highlights: [
@@ -259,6 +274,8 @@ export const listings: Listing[] = [
     time: "8:00 PM",
     venue: "Outdoor Amphitheatre",
     city: "Genting Highlands",
+    lat: 3.4237,
+    lng: 101.7932,
     description:
       "An acoustic night in the cool hill air. Bring a jacket, grab a spot on the lawn and enjoy four sets under the stars.",
     highlights: [
@@ -293,6 +310,8 @@ export const listings: Listing[] = [
     time: "9:00 AM – 5:00 PM",
     venue: "Esplanade",
     city: "George Town, Penang",
+    lat: 5.4206,
+    lng: 100.3436,
     description:
       "A day out for the whole family with games, food and performances. Ticket sales go to [Partner NGO]'s community kitchen programme.",
     highlights: [

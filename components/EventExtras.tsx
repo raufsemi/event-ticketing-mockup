@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Store } from "lucide-react";
-import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
+import { Check } from "lucide-react";
 import StatsCounter from "./StatsCounter";
 import LogoStrip from "./LogoStrip";
 import {
@@ -15,7 +13,40 @@ import {
   type EventType,
 } from "@/lib/events";
 
-const wrap = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8";
+const wrap = "mx-auto max-w-7xl px-5 sm:px-6 lg:px-8";
+
+const and = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
+
+function Heading({
+  title,
+  description,
+  dark,
+  className = "mb-10 sm:mb-14",
+}: {
+  title: string;
+  description?: string;
+  dark?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`max-w-2xl ${className}`}>
+      <h2
+        className={`font-display text-3xl/tight font-extrabold tracking-tight text-balance sm:text-4xl/tight ${
+          dark ? "text-white" : "text-ink"
+        }`}
+      >
+        {title}
+      </h2>
+      {description && (
+        <p
+          className={`mt-3 text-base/relaxed text-pretty ${dark ? "text-white/60" : "text-muted"}`}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+  );
+}
 
 /* Running ------------------------------------------------------------- */
 
@@ -23,55 +54,51 @@ function RunningExtras({ e }: { e: EventType }) {
   return (
     <>
       <section className={`${wrap} py-20 sm:py-28`}>
-        <SectionHeading
-          eyebrow="Race day"
+        <Heading
           title="From flag-off to prize giving"
-          subtitle="A typical half-marathon morning. Every race gets its own minute-by-minute plan."
-          className="mb-12"
+          description="A typical half-marathon morning. Every race gets its own minute-by-minute plan."
         />
-        <ol className="relative grid gap-6 md:grid-cols-3 lg:grid-cols-6 lg:gap-4">
-          <span aria-hidden className="absolute top-5 right-0 left-0 hidden h-px bg-(--accent)/30 lg:block" />
-          {raceDayTimeline.map((step, i) => (
-            <Reveal as="li" key={step.time} delay={i * 0.07} className="relative flex gap-4 lg:block">
-                <span className="relative z-10 grid size-10 shrink-0 place-items-center rounded-full bg-(--accent) font-display text-sm font-extrabold text-(--accent-on) ring-4 ring-canvas">
-                  {i + 1}
-                </span>
-                <div className="lg:mt-5">
-                  <p className="text-sm font-semibold text-(--accent-ink)">{step.time}</p>
-                  <h3 className="mt-1 font-display text-lg font-bold tracking-tight text-ink">{step.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{step.desc}</p>
-                </div>
-            </Reveal>
+
+        {/* The clock is the structure: each step hangs off its time */}
+        <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 xl:gap-x-6">
+          {raceDayTimeline.map((step) => (
+            <li key={step.time} className="border-t-2 border-(--accent) pt-5">
+              <p className="font-display text-2xl font-extrabold tracking-tight text-ink tabular-nums">
+                {step.time}
+              </p>
+              <h3 className="mt-3 font-semibold text-ink">{step.title}</h3>
+              <p className="mt-1.5 text-sm/relaxed text-muted">{step.desc}</p>
+            </li>
           ))}
         </ol>
       </section>
 
       <section className="bg-tint py-20 sm:py-28">
         <div className={wrap}>
-          <SectionHeading
-            eyebrow="Race kit"
+          <Heading
             title="Medals and kits runners keep"
-            subtitle="Custom-designed for every race. Swap these placeholders for real product shots."
-            className="mb-12"
+            description="Custom-designed for every race. Swap these placeholders for real product shots."
           />
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {raceKit.map((item, i) => (
-              <Reveal key={item} delay={i * 0.08}>
-                <figure className="group overflow-hidden rounded-3xl bg-white ring-1 ring-line transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-24px_rgba(15,26,18,0.3)]">
-                  <div className="relative aspect-square overflow-hidden">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4">
+            {raceKit.map((item) => (
+              <li key={item}>
+                <figure>
+                  <div className="relative aspect-square overflow-hidden rounded-2xl bg-white">
                     <Image
                       src={eventImage(e, 600, 600, `${item} Placeholder`)}
-                      alt={`${item} placeholder`}
+                      alt={item}
                       fill
                       sizes="(min-width: 1024px) 25vw, 50vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-cover"
                     />
                   </div>
-                  <figcaption className="p-4 font-display font-bold text-ink">{item}</figcaption>
+                  <figcaption className="mt-3 text-sm font-semibold text-ink sm:text-base">
+                    {item}
+                  </figcaption>
                 </figure>
-              </Reveal>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
     </>
@@ -80,37 +107,51 @@ function RunningExtras({ e }: { e: EventType }) {
 
 /* Bazaar@Buffet ------------------------------------------------------- */
 
+const vendorPerks = [
+  "Ready-built canopy, table and power",
+  "Promotion on our socials",
+  "Cleaning and waste handled",
+];
+
 function BazaarExtras({ e }: { e: EventType }) {
   return (
     <>
       <section className={`${wrap} py-20 sm:py-28`}>
-        <div className="grid items-center gap-12 lg:grid-cols-[1.4fr_1fr]">
-          <Reveal>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-3xl ring-1 ring-line">
-              <Image
-                src={eventImage(e, 1200, 750, "Booth Layout Illustration")}
-                alt="Booth layout illustration placeholder"
-                fill
-                sizes="(min-width: 1024px) 58vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </Reveal>
-          <div>
-            <SectionHeading
-              eyebrow="Site layout"
-              title="Every booth, aisle and bin, planned"
-              subtitle="We draw the site to scale before a single canopy goes up, so crowds move and every vendor gets seen."
+        <div className="grid items-start gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+          <div className="relative aspect-16/10 overflow-hidden rounded-3xl bg-canvas ring-1 ring-line">
+            <Image
+              src={eventImage(e, 1200, 750, "Booth Layout Illustration")}
+              alt="Site plan showing booth zones, aisles and facilities"
+              fill
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              className="object-cover"
             />
-            <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          </div>
+
+          <div>
+            <Heading
+              title="Every booth, aisle and bin, planned"
+              description="We draw the site to scale before a single canopy goes up, so crowds move and every vendor gets seen."
+              className="mb-8"
+            />
+            {/* Map key: swatch shades match the zones on the plan */}
+            <ul className="divide-y divide-line border-y border-line">
               {boothLegend.map((b, i) => (
-                <Reveal as="li" key={b.label} delay={i * 0.06} className="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">
-                    <span className="mt-1 size-3 shrink-0 rounded-sm bg-(--accent)" style={{ opacity: 1 - i * 0.2 }} />
-                    <span>
-                      <span className="block font-semibold text-ink">{b.label}</span>
-                      <span className="block text-sm text-muted">{b.desc}</span>
+                <li key={b.label} className="flex items-start gap-4 py-4">
+                  <span
+                    aria-hidden
+                    className="mt-1.5 size-3 shrink-0 rounded-[3px] bg-(--accent)"
+                    style={{ opacity: 1 - i * 0.2 }}
+                  />
+                  <span>
+                    <span className="block font-semibold text-ink">
+                      {b.label}
                     </span>
-                </Reveal>
+                    <span className="mt-0.5 block text-sm/relaxed text-muted">
+                      {b.desc}
+                    </span>
+                  </span>
+                </li>
               ))}
             </ul>
           </div>
@@ -118,43 +159,40 @@ function BazaarExtras({ e }: { e: EventType }) {
       </section>
 
       <section className={`${wrap} pb-20 sm:pb-28`}>
-        <Reveal>
-          <div className="relative isolate overflow-hidden rounded-[2rem] bg-ink p-8 text-white sm:p-12 lg:p-16">
-            <div aria-hidden className="absolute -top-20 -right-20 -z-10 size-80 rounded-full bg-(--accent)/30 blur-3xl" />
-            <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-center">
-              <div>
-                <span className="grid size-12 place-items-center rounded-2xl bg-(--accent) text-ink">
-                  <Store className="size-6" />
-                </span>
-                <h2 className="mt-6 font-display text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
-                  Sell at our next bazaar
-                </h2>
-                <p className="mt-4 max-w-lg text-white/70">
-                  We&apos;re always looking for good food and friendly vendors. Tell us what you sell and we&apos;ll let
-                  you know when slots open.
-                </p>
-              </div>
-              <div>
-                <ul className="space-y-3 text-white/80">
-                  {["Ready-built canopy, table and power", "Promotion on our socials", "Cleaning and waste handled"].map(
-                    (x) => (
-                      <li key={x} className="flex items-center gap-3">
-                        <Check className="size-5 text-(--accent)" />
-                        {x}
-                      </li>
-                    ),
-                  )}
-                </ul>
-                <Link
-                  href={`/?type=${e.slug}&enquiry=vendor#contact`}
-                  className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-(--accent-btn) px-7 py-4 font-semibold text-(--accent-on) transition hover:-translate-y-0.5 sm:w-auto"
-                >
-                  Become a Vendor
-                </Link>
-              </div>
-            </div>
+        <div className="grid gap-10 rounded-3xl bg-ink px-6 py-10 text-white sm:px-12 sm:py-14 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-16 lg:px-16 lg:py-16">
+          <div>
+            <h2 className="font-display text-3xl/tight font-extrabold tracking-tight text-balance sm:text-4xl/tight">
+              Sell at our next bazaar
+            </h2>
+            <p className="mt-4 max-w-md text-base/relaxed text-white/65">
+              We’re always looking for good food and friendly vendors. Tell us
+              what you sell and we’ll let you know when slots open.
+            </p>
           </div>
-        </Reveal>
+
+          <div>
+            <ul className="divide-y divide-white/10 border-y border-white/10">
+              {vendorPerks.map((x) => (
+                <li
+                  key={x}
+                  className="flex items-center gap-3 py-3.5 text-white/85"
+                >
+                  <Check
+                    aria-hidden
+                    className="size-4 shrink-0 text-(--accent)"
+                  />
+                  {x}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={`/?type=${e.slug}&enquiry=vendor#contact`}
+              className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-(--accent-btn) px-7 py-4 font-semibold text-(--accent-on) transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--accent) sm:w-auto"
+            >
+              Become a vendor
+            </Link>
+          </div>
+        </div>
       </section>
     </>
   );
@@ -167,22 +205,26 @@ function CharityExtras() {
     <>
       <section
         style={{ "--accent-ink": "#FDA4AF" } as React.CSSProperties}
-        className="relative isolate overflow-hidden bg-ink py-20 text-white sm:py-28"
+        className="bg-ink py-20 text-white sm:py-28"
       >
-        <div aria-hidden className="absolute -bottom-32 -left-20 -z-10 size-96 rounded-full bg-(--accent)/25 blur-3xl" />
         <div className={wrap}>
-          <SectionHeading
+          <Heading
             dark
-            eyebrow="Our impact"
             title="What our charity events have raised so far"
-            subtitle="Placeholder figures. Replace with your verified totals."
-            className="mb-14"
+            description="Placeholder figures. Replace with your verified totals."
           />
-          <StatsCounter dark stats={impactStats} />
+          <div className="border-t border-white/10 pt-10 sm:pt-12">
+            <StatsCounter dark stats={impactStats} />
+          </div>
         </div>
       </section>
-      <section className="border-b border-line bg-white py-14">
-        <LogoStrip label="NGOs and foundations we've worked with" prefix="Partner NGO" count={7} />
+
+      <section className="border-b border-line bg-white py-14 sm:py-16">
+        <LogoStrip
+          label="NGOs and foundations we’ve worked with"
+          prefix="Partner NGO"
+          count={7}
+        />
       </section>
     </>
   );
@@ -192,40 +234,47 @@ function CharityExtras() {
 
 function ConcertExtras() {
   return (
-    <section className="relative isolate overflow-hidden py-20 sm:py-28">
-      <div aria-hidden className="absolute top-1/2 left-1/2 -z-10 size-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--accent)/15 blur-3xl" />
+    <section className="bg-night py-20 text-white sm:py-28">
       <div className={wrap}>
-        <SectionHeading dark eyebrow="Past lineups" title="Who's played our stages" subtitle="Placeholder artist names." align="center" className="mb-14" />
-        <Reveal>
-          <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 text-center backdrop-blur sm:p-14">
-            <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2">
-              {lineup.headliners.map((n) => (
-                <li
-                  key={n}
-                  className="bg-gradient-to-r from-white to-[#C4B5FD] bg-clip-text font-display text-4xl font-extrabold tracking-tight text-transparent uppercase sm:text-6xl lg:text-7xl"
-                >
-                  {n}
-                </li>
-              ))}
-            </ul>
-            <div className="mx-auto my-8 h-px w-24 bg-(--accent)" />
-            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-              {lineup.main.map((n) => (
-                <li key={n} className="font-display text-2xl font-bold tracking-tight text-white/90 uppercase sm:text-3xl">
-                  {n}
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm font-semibold tracking-[0.12em] text-white/60 uppercase sm:text-base">
-              {lineup.support.map((n, i) => (
-                <li key={n} className="flex items-center gap-5">
-                  {i > 0 && <span aria-hidden className="size-1 rounded-full bg-(--accent)" />}
-                  {n}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
+        <Heading
+          dark
+          title="Who’s played our stages"
+          description="A few of the acts from past shows. Placeholder names for now."
+        />
+
+        {/* Billed like a gig poster: size tells you who headlined */}
+        <div className="border-t-2 border-(--accent) pt-10 sm:pt-14">
+          <ul className="space-y-1 sm:space-y-2">
+            {lineup.headliners.map((n) => (
+              <li
+                key={n}
+                className="font-display text-5xl/[0.95] font-extrabold tracking-tight break-words text-white uppercase sm:text-7xl/[0.95] lg:text-8xl/[0.92]"
+              >
+                {n}
+              </li>
+            ))}
+          </ul>
+
+          <ul className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-white/10 pt-8 sm:mt-14 sm:gap-x-5 sm:pt-10">
+            {lineup.main.map((n, i) => (
+              <li
+                key={n}
+                className="flex items-baseline gap-x-4 font-display text-2xl font-bold tracking-tight text-white/80 uppercase sm:gap-x-5 sm:text-4xl"
+              >
+                {i > 0 && (
+                  <span aria-hidden className="font-normal text-(--accent)">
+                    /
+                  </span>
+                )}
+                {n}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-6 max-w-3xl text-base/relaxed text-pretty text-white/55 sm:text-lg/relaxed">
+            With {and.format(lineup.support)}.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -241,5 +290,7 @@ export default function EventExtras({ e }: { e: EventType }) {
       return <CharityExtras />;
     case "concerts":
       return <ConcertExtras />;
+    default:
+      return null;
   }
 }

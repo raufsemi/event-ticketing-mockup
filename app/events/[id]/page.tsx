@@ -11,6 +11,7 @@ import TicketCard from "@/components/TicketCard";
 import { accentVars, eventImage, getEvent } from "@/lib/events";
 import { getListing, listings } from "@/lib/listings";
 import { photos } from "@/lib/photos";
+import VenueMap from "@/components/Venuemap";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -36,18 +37,31 @@ async function ListingPageContent({ params }: Props) {
   const l = getListing((await params).id);
   if (!l) notFound();
   const e = getEvent(l.type)!;
-  const more = listings.filter((x) => x.id !== l.id && x.type === l.type).concat(listings.filter((x) => x.type !== l.type)).slice(0, 4);
+  const more = listings
+    .filter((x) => x.id !== l.id && x.type === l.type)
+    .concat(listings.filter((x) => x.type !== l.type))
+    .slice(0, 4);
 
   return (
     <div style={accentVars(e)}>
       {/* Banner */}
       <section className="relative isolate overflow-hidden bg-(--accent)/8">
-        <div aria-hidden className="absolute -top-40 -right-32 -z-10 size-[30rem] rounded-full bg-(--accent) opacity-20 blur-3xl" />
+        <div
+          aria-hidden
+          className="absolute -top-40 -right-32 -z-10 size-[30rem] rounded-full bg-(--accent) opacity-20 blur-3xl"
+        />
         <div className="mx-auto max-w-7xl px-4 pt-8 pb-12 sm:px-6 sm:pb-16 lg:px-8">
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1 text-sm text-muted">
-            <Link href="/events" className="hover:underline">Events</Link>
+          <nav
+            aria-label="Breadcrumb"
+            className="flex flex-wrap items-center gap-1 text-sm text-muted"
+          >
+            <Link href="/events" className="hover:underline">
+              Events
+            </Link>
             <ChevronRight className="size-4" />
-            <Link href={`/${e.slug}`} className="hover:underline">{e.name}</Link>
+            <Link href={`/${e.slug}`} className="hover:underline">
+              {e.name}
+            </Link>
             <ChevronRight className="size-4" />
             <span className="truncate text-ink">{l.title}</span>
           </nav>
@@ -86,7 +100,9 @@ async function ListingPageContent({ params }: Props) {
                 <div className="flex items-center gap-3">
                   <dt className="sr-only">Venue</dt>
                   <MapPin className="size-5 shrink-0 text-(--accent-ink)" />
-                  <dd className="font-medium">{l.venue}, {l.city}</dd>
+                  <dd className="font-medium">
+                    {l.venue}, {l.city}
+                  </dd>
                 </div>
               </dl>
               <a
@@ -104,14 +120,23 @@ async function ListingPageContent({ params }: Props) {
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.4fr_1fr] lg:gap-14 lg:px-8">
         <div className="space-y-12">
           <Reveal>
-            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink">About this event</h2>
-            <p className="mt-4 text-lg leading-relaxed text-pretty text-muted">{l.description}</p>
+            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink">
+              About this event
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-pretty text-muted">
+              {l.description}
+            </p>
           </Reveal>
           <Reveal>
-            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink">Highlights</h2>
+            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink">
+              Highlights
+            </h2>
             <ul className="mt-5 grid gap-3 sm:grid-cols-2">
               {l.highlights.map((h) => (
-                <li key={h} className="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-line">
+                <li
+                  key={h}
+                  className="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-line"
+                >
                   <span className="grid size-6 shrink-0 place-items-center rounded-full bg-(--accent)/15 text-(--accent-ink)">
                     <Check className="size-4" />
                   </span>
@@ -121,17 +146,18 @@ async function ListingPageContent({ params }: Props) {
             </ul>
           </Reveal>
           <Reveal>
-            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink">Venue</h2>
-            <div className="relative mt-5 aspect-[16/9] overflow-hidden rounded-3xl ring-1 ring-line">
-              <Image
-                src={eventImage(e, 1200, 675, `Venue Map: ${l.venue}`)}
-                alt={`Venue map placeholder for ${l.venue}`}
-                fill
-                sizes="(min-width: 1024px) 55vw, 100vw"
-                className="object-cover"
+            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink">
+              Venue
+            </h2>
+            <div className="mt-5">
+              <VenueMap
+                venue={l.venue}
+                city={l.city}
+                lat={l.lat}
+                lng={l.lng}
+                color={e.colors.accent}
               />
             </div>
-            <p className="mt-3 text-sm text-muted">{l.venue}, {l.city}</p>
           </Reveal>
         </div>
 
@@ -144,8 +170,13 @@ async function ListingPageContent({ params }: Props) {
       <section className="bg-tint py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex items-end justify-between gap-4">
-            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">You might also like</h2>
-            <Link href="/events" className="shrink-0 text-sm font-semibold text-brand-ink hover:underline">
+            <h2 className="font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
+              You might also like
+            </h2>
+            <Link
+              href="/events"
+              className="shrink-0 text-sm font-semibold text-brand-ink hover:underline"
+            >
               All events
             </Link>
           </div>

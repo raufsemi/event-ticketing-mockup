@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { Search, X } from "lucide-react";
 import { events } from "@/lib/events";
 import { listings } from "@/lib/listings";
+import { getState, stateOf, type MyState } from "@/state";
 import EventCarousel from "./EventCarousel";
 
 type Listing = (typeof listings)[number];
@@ -16,11 +18,14 @@ const isHot = (l: Listing) =>
 /** /events: a search box, jump links, and one swipeable row per event type. */
 export default function EventsBrowser() {
   const [query, setQuery] = useState("");
+  const [place, setPlace] = useState<MyState | null>(null);
   const q = query.trim().toLowerCase();
+  const filtering = !!q || !!place;
 
   const rows = useMemo(() => {
     const matches = (l: Listing) =>
-      !q || `${l.title} ${l.city} ${l.venue}`.toLowerCase().includes(q);
+      (!place || stateOf(l.city)?.slug === place.slug) &&
+      (!q || `${l.title} ${l.city} ${l.venue}`.toLowerCase().includes(q));
 
     const byType = events
       .map((e) => ({
@@ -32,7 +37,7 @@ export default function EventsBrowser() {
       .filter((r) => r.items.length > 0);
 
     const hot = listings.filter(isHot);
-    const showHot = !q && hot.length > 0;
+    const showHot = !q && !place && hot.length > 0;
 
     return showHot
       ? [
@@ -45,17 +50,31 @@ export default function EventsBrowser() {
           ...byType,
         ]
       : byType;
-  }, [q]);
+  }, [q, place]);
 
   const total = rows
     .filter((r) => r.id !== "selling-fast")
     .reduce((n, r) => n + r.items.length, 0);
 
-  // Home page links to /events?type=runs, so jump to that row on arrival.
+  // Home page links to /events?type=runs or /events?state=penang.
   useEffect(() => {
-    const type = new URLSearchParams(window.location.search).get("type");
+    const params = new URLSearchParams(window.location.search);
+    const st = params.get("state");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (st) setPlace(getState(st) ?? null);
+    const type = params.get("type");
     if (type) document.getElementById(type)?.scrollIntoView({ block: "start" });
   }, []);
+
+  const clearPlace = () => {
+    setPlace(null);
+    window.history.replaceState(null, "", window.location.pathname);
+  };
+
+  const clearAll = () => {
+    setQuery("");
+    clearPlace();
+  };
 
   return (
     <div>
@@ -111,11 +130,35 @@ export default function EventsBrowser() {
         </nav>
       </div>
 
-      {q && rows.length > 0 && (
-        <p className="-mt-8 mb-12 text-sm text-muted sm:-mt-12">
-          {total} {total === 1 ? "event matches" : "events match"} “
-          {query.trim()}”
-        </p>
+      {filtering && rows.length > 0 && (
+        <div className="-mt-8 mb-12 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted sm:-mt-12">
+          {place && (
+            <span className="flex items-center gap-2.5 font-medium text-ink">
+              <Image
+                src={place.flag}
+                alt=""
+                width={32}
+                height={16}
+                unoptimized
+                className="h-4 w-8 rounded-[2px] object-cover ring-1 ring-black/10"
+              />
+              Events in {place.name}
+            </span>
+          )}
+          <span>
+            {total} {total === 1 ? "event" : "events"}
+            {q && <> matching “{query.trim()}”</>}
+          </span>
+          {place && (
+            <button
+              type="button"
+              onClick={clearPlace}
+              className="font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+            >
+              Show all states
+            </button>
+          )}
+        </div>
       )}
 
       {/* Rows */}
@@ -136,17 +179,20 @@ export default function EventsBrowser() {
       ) : (
         <div className="py-24 text-center">
           <p className="text-lg font-semibold text-ink">
-            No events match “{query.trim()}”
+            {q
+              ? `No events match “${query.trim()}”`
+              : `No events in ${place?.name} yet`}
+            {q && place && ` in ${place.name}`}
           </p>
           <p className="mt-2 text-sm text-muted">
-            Try an event name, a venue or a city like Penang.
+            Try another search or look across all states.
           </p>
           <button
             type="button"
-            onClick={() => setQuery("")}
+            onClick={clearAll}
             className="mt-6 text-sm font-semibold text-ink underline decoration-line underline-offset-[6px] transition hover:decoration-ink"
           >
-            Clear search
+            Clear filters
           </button>
         </div>
       )}

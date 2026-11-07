@@ -11,6 +11,7 @@ import EventRow from "@/components/home/EventRow";
 import { accentVars, events, portfolio, stats } from "@/lib/events";
 import { listings } from "@/lib/listings";
 import { photos } from "@/lib/photos";
+import StateGrid from "@/components/StateGrid";
 
 const isHot = (l: (typeof listings)[number]) =>
   l.badge === "Selling fast" ||
@@ -229,19 +230,13 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="upcoming">
+        <section id="states">
           <Heading
-            title="Coming up"
-            description="Everything on sale, soonest first."
+            title="Events by state"
+            description="From Perlis to Sabah, find what’s on near you."
             href="/events"
           />
-          <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-6">
-            {comingUp.map((l) => (
-              <li key={l.id} className="min-w-0">
-                <EventRow listing={l} />
-              </li>
-            ))}
-          </ul>
+          <StateGrid />
         </section>
 
         <section>
