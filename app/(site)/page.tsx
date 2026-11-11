@@ -7,7 +7,6 @@ import LogoStrip from "@/components/LogoStrip";
 import EnquiryForm from "@/components/EnquiryForm";
 import TicketCard from "@/components/TicketCard";
 import HeroSearch from "@/components/home/HeroSearch";
-import EventRow from "@/components/home/EventRow";
 import { accentVars, events, portfolio, stats } from "@/lib/events";
 import { listings } from "@/lib/listings";
 import { photos } from "@/lib/photos";
@@ -23,8 +22,6 @@ const sellingFast = [
   ...listings.filter(isHot),
   ...listings.filter((l) => !isHot(l)),
 ].slice(0, 4);
-
-const comingUp = listings.slice(0, 6);
 
 const perks = ["Instant e-tickets", "Secure checkout", "FPX and e-wallets"];
 

@@ -1,6 +1,6 @@
 // Company-wide details. Change these in one place.
 export const site = {
-  name: "EVENTBRIGHT",
+  name: "Sorak",
   tagline: "Events that move people.",
   phoneDisplay: "+60 12-345 6789",
   whatsapp: "60123456789",

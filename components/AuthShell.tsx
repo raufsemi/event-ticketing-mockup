@@ -1,9 +1,23 @@
-import { CalendarCheck2, QrCode, Ticket } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, CalendarCheck2, QrCode, Ticket } from "lucide-react";
+import { site } from "@/lib/site";
 
 const perks = [
-  { icon: Ticket, title: "All your tickets in one place", desc: "Every booking saved to your account, ready at the gate." },
-  { icon: QrCode, title: "Instant e-tickets", desc: "Scan straight from your phone. No printing, no queues." },
-  { icon: CalendarCheck2, title: "Plan your own events", desc: "Send enquiries and track quotes from your dashboard." },
+  {
+    icon: Ticket,
+    title: "All your tickets in one place",
+    desc: "Every booking saved to your account, ready at the gate.",
+  },
+  {
+    icon: QrCode,
+    title: "Instant e-tickets",
+    desc: "Scan straight from your phone. No printing, no queues.",
+  },
+  {
+    icon: CalendarCheck2,
+    title: "Plan your own events",
+    desc: "Send enquiries and track quotes from your dashboard.",
+  },
 ];
 
 /** Split layout shared by the login and register pages. */
@@ -19,11 +33,31 @@ export default function AuthShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-[calc(100dvh-4rem)] lg:grid-cols-2">
-      <section className="flex items-center justify-center px-4 py-12 sm:px-6 sm:py-16">
-        <div className="w-full max-w-md">
-          <p className="text-sm font-semibold tracking-[0.14em] text-brand-ink uppercase">{eyebrow}</p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">{title}</h1>
+    <div className="grid min-h-dvh lg:grid-cols-2">
+      <section className="flex flex-col px-4 py-6 sm:px-6">
+        <header className="flex items-center justify-between gap-4">
+          <Link
+            href="/"
+            className="font-display text-lg font-extrabold tracking-tight text-ink"
+            aria-label={`${site.name} home`}
+          >
+            {site.name}
+          </Link>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            <ArrowLeft className="size-4" aria-hidden />
+            Back to site
+          </Link>
+        </header>
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10 sm:py-16">
+          <p className="text-sm font-semibold tracking-[0.14em] text-brand-ink uppercase">
+            {eyebrow}
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">
+            {title}
+          </h1>
           <p className="mt-3 text-muted">{subtitle}</p>
           <div className="mt-8 rounded-3xl bg-white p-6 shadow-[0_24px_60px_-30px_rgba(15,26,18,0.35)] ring-1 ring-line sm:p-8">
             {children}
@@ -39,7 +73,8 @@ export default function AuthShell({
         </div>
         <div className="mx-auto max-w-lg px-12 py-16">
           <p className="font-display text-4xl leading-tight font-extrabold tracking-tight text-balance">
-            Your events, your tickets<span className="text-brand">.</span> One account.
+            Your events, your tickets<span className="text-brand">.</span> One
+            account.
           </p>
           <ul className="mt-10 space-y-6">
             {perks.map((p) => (
@@ -49,7 +84,9 @@ export default function AuthShell({
                 </span>
                 <span>
                   <span className="block font-semibold">{p.title}</span>
-                  <span className="mt-0.5 block text-sm text-white/65">{p.desc}</span>
+                  <span className="mt-0.5 block text-sm text-white/65">
+                    {p.desc}
+                  </span>
                 </span>
               </li>
             ))}
